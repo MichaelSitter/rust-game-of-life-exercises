@@ -66,15 +66,14 @@ impl GameOfLife for BrokenGame {
     }
 }
 
-#[cfg(test)] // this attr means the module below is only included when doing `cargo test`
 pub struct Mine {
-    height: u32,
-    width: u32,
+    height: i32,
+    width: i32,
     cell_states: Vec<Vec<bool>>,
 }
 
 impl Mine {
-    pub fn new(game_width: u32, game_height: u32) -> Self {
+    pub fn new(game_width: i32, game_height: i32) -> Self {
         Mine {
             width: game_width,
             height: game_height,
@@ -170,12 +169,12 @@ impl GameOfLife for Mine {
     }
 
     /// Return the current width in cells of the game.
-    fn width(&self) -> u32 {
+    fn width(&self) -> i32 {
         self.width
     }
 
     /// Return the current height in cells of the game.
-    fn height(&self) -> u32 {
+    fn height(&self) -> i32 {
         self.height
     }
 }

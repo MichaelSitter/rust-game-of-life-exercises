@@ -67,6 +67,93 @@ impl GameOfLife for BrokenGame {
 }
 
 #[cfg(test)] // this attr means the module below is only included when doing `cargo test`
+pub struct Mine {
+    height: u32,
+    width: u32,
+    cell_states: Vec<Vec<bool>>,
+}
+
+impl Mine {
+    pub fn new(game_width: u32, game_height: u32) -> Self {
+        Mine {
+            width: game_width,
+            height: game_height,
+            cell_states: vec![vec![false; game_width as usize]; game_height as usize]
+        }
+    }
+
+    fn get_live_neighbor_count(&mut self, x: i32, y: i32) -> i32 {
+        let mut count = 0;
+        let xs = vec![x-1, x, x+1];
+        let ys = vec![y-1, y, y+1];
+
+        for yi in ys.iter() {
+            for xi in xs.iter() {
+                if *xi == x && *yi == y {
+                    continue;
+                }
+                match self.is_cell_alive(*xi, *yi) {
+                    Some(is_alive) => {
+                        if is_alive {
+                            count = count + 1;
+                        }
+                    },
+                    None => {},
+                }
+            }
+        }
+        count
+    }
+}
+
+impl GameOfLife for Mine {
+    /// Return `Some(true)` if the cell is alive, `Some(false)` if it is dead, or `None` if `x`
+    /// and/or `y` are out of bounds.
+    fn is_cell_alive(&self, x: i32, y: i32) -> Option<bool> {
+        if x < 0 || y < 0 || x > self.width as i32 || y > self.height as i32 {
+            None
+        } else {
+            Some(self.cell_states[y as usize][x as usize])
+        }
+    }
+
+    /// Swap the given cell from alive to dead or dead to alive.
+    ///
+    /// If `x` or `y` is out of bounds, this method should do nothing.
+    ///
+    /// The origin is assumed to be at the top left, i.e. when `(x, y) == (0, 0)` then the top-left-most
+    /// cell should be toggled.
+    fn toggle_cell(&mut self, _x: i32, _y: i32) {
+        let cell = self.is_cell_alive(_x, _y);
+        match cell {
+            Some(is_alive) => {
+                if is_alive {
+                    self.cell_states[_y as usize][_x as usize] = false
+                } else {
+                    self.cell_states[_y as usize][_x as usize] = true
+                }
+            },
+            None => { },
+        }
+    }
+
+    /// Execute one timestep; i.e. cause cells to live, be born, or die based on the amount of
+    /// neighbors they have.
+    fn tick(&mut self) {
+        // self.get_live_neighbor_count(_x, _y)
+    }
+
+    /// Return the current width in cells of the game.
+    fn width(&self) -> u32 {
+        self.width
+    }
+
+    /// Return the current height in cells of the game.
+    fn height(&self) -> u32 {
+        self.height
+    }
+}
+
 mod broken_game_test {
     use super::{BrokenGame, GameOfLife};
 

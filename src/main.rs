@@ -63,10 +63,7 @@ pub fn main() {
     let mut game: Box<GameOfLife> = match sim.as_str() {
         SIM_SOLUTION => Box::new(game_of_life_solution::GameOfLifeSolution::new(game_width, game_height)),
         SIM_BROKEN => Box::new(game_of_life::BrokenGame::new(game_width, game_height)),
-        SIM_MINE => {
-            //FIXME reference your implementation here for the step 1 exercise :)
-            unimplemented!("The {} simulation is not yet implemented!", SIM_MINE);
-        }
+        SIM_MINE => Box::new(game_of_life::Mine::new(game_width, game_height)),
         other => panic!(
             "Bad sim {}, expected one of {}\n{}",
             other, available_sims, usage

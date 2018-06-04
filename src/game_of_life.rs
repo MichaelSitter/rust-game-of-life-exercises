@@ -140,7 +140,33 @@ impl GameOfLife for Mine {
     /// Execute one timestep; i.e. cause cells to live, be born, or die based on the amount of
     /// neighbors they have.
     fn tick(&mut self) {
-        // self.get_live_neighbor_count(_x, _y)
+
+        let mut next_board = vec![vec![false; self.width as usize]; self.height as usize];
+
+        for y in 0..self.height as i32-1 {
+            for x in 0..self.width as i32-1 {
+                let neighbors = self.get_live_neighbor_count(x,y);
+                match self.is_cell_alive(x, y) {
+                    Some(is_alive) => {
+                        if is_alive {
+                            if neighbors < 2 {
+                                next_board[y as usize][x as usize] = false;
+                            } else if neighbors == 2 || neighbors == 3 {
+                                next_board[y as usize][x as usize] = true;
+                            } else {
+                                next_board[y as usize][x as usize] = false;
+                            }
+                        } else if neighbors == 3 {
+                            next_board[y as usize][x as usize] = true;
+                        } else {
+                            next_board[y as usize][x as usize] = false;
+                        }
+                    },
+                    None => {},
+                }
+            }
+        }
+        self.cell_states = next_board;
     }
 
     /// Return the current width in cells of the game.
